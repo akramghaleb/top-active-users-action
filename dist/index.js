@@ -13435,7 +13435,7 @@ module.exports =
                 const git = __nccwpck_require__(1193);
                 let commitGit = function() {
                     let INSIGHT_BOT_USERNAME = 'akramghaleb';
-                    let INSIGHT_BOT_EMAIL = 'muath.ye@gmail.com';
+                    let INSIGHT_BOT_EMAIL = 'akramghammari@gmail.com';
                     let commit = async function(message) {
                         console.log(`Git Commit "${message}"`)
                         try {
