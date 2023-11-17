@@ -1,2 +1,2 @@
-# -top-users
+# top-users
  top active users script
