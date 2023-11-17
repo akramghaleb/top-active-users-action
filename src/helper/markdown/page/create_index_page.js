@@ -4,18 +4,18 @@ const starComponent = require('../component/star_component');
 const socialMediaComponent = require('../component/social_media_component');
 const thirdPartyComponent = require('../component/third_party_component');
 const licenseComponent = require('../component/license_component');
-let createIndexPage = (function () {
-    let createListOfCities = function (locationDataModel) {
+let createIndexPage = (function() {
+    let createListOfCities = function(locationDataModel) {
         let cities = ``;
-        for(const location of locationDataModel.locations) {
-            if(locationDataModel.country !== location) {
+        for (const location of locationDataModel.locations) {
+            if (locationDataModel.country !== location) {
                 cities = cities + `\t\t\t<code>${formatMarkdown.capitalizeTheFirstLetterOfEachWord(location)}</code> \n`;
             }
         }
         return cities;
     }
-    let createListOfCountriesAndCitiesTable = function (indexUrl, readConfigResponseModel) {
-        readConfigResponseModel.locations.sort((a,b) => a.country > b.country ? 1 : -1);
+    let createListOfCountriesAndCitiesTable = function(indexUrl, readConfigResponseModel) {
+        readConfigResponseModel.locations.sort((a, b) => a.country > b.country ? 1 : -1);
         let table = `<table>\n`;
         table = table + `\t<tr>\n`;
         table = table + `\t\t<th>\n`;
@@ -25,7 +25,7 @@ let createIndexPage = (function () {
         table = table + `\t\t\tCities\n`;
         table = table + `\t\t</th>\n`;
         table = table + `\t</tr>\n`;
-        for(const locationDataModel of readConfigResponseModel.locations) {
+        for (const locationDataModel of readConfigResponseModel.locations) {
             table = table + `\t<tr>\n`;
             table = table + `\t\t<td>\n`;
             table = table + `\t\t\t<a href="${indexUrl}/blob/main/markdown/public_contributions/${formatMarkdown.getCountryName(locationDataModel.country)}.md">\n`;
@@ -40,7 +40,7 @@ let createIndexPage = (function () {
         table = table + `</table>\n\n`;
         return table;
     }
-    let create = function (githubUsernameAndRepository, readConfigResponseModel) {
+    let create = function(githubUsernameAndRepository, readConfigResponseModel) {
         let markdown = headerComponent.create();
         markdown = markdown + `<a href="https://akramghaleb.github.io/top-active-users/index.html">\n`;
         markdown = markdown + `\t<img align="right" width="400" src="https://github.com/akramghaleb/top-active-users-monitor/raw/master/public/images/banner/top-active-users-map.png" alt="top-active-users-by-country">\n`;

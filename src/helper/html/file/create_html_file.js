@@ -1,5 +1,5 @@
-let createHtmlFile = (function () {
-    let create = function () {
+let createHtmlFile = (function() {
+    let create = function() {
         let html = `<!DOCTYPE html>\n`;
         html = html + `<html>\n`;
         html = html + `\t<head>\n`;

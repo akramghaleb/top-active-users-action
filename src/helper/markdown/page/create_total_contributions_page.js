@@ -5,8 +5,8 @@ const socialMediaComponent = require('../component/social_media_component');
 const shortcutMenuComponent = require('../component/shortcut_menu_component');
 const thirdPartyComponent = require('../component/third_party_component');
 const licenseComponent = require('../component/license_component');
-let createTotalContributionsPage = (function () {
-    let createUserTableByPublicContributions = function (readCacheResponseModel) {
+let createTotalContributionsPage = (function() {
+    let createUserTableByPublicContributions = function(readCacheResponseModel) {
         readCacheResponseModel.users.sort((a, b) => parseFloat(b.publicContributions + b.privateContributions) - parseFloat(a.publicContributions + a.privateContributions));
         let index = 1;
         let table = ``;
@@ -46,7 +46,7 @@ let createTotalContributionsPage = (function () {
         }
         return table;
     }
-    let create = function (outputMarkdownModel) {
+    let create = function(outputMarkdownModel) {
         let country = formatMarkdown.capitalizeTheFirstLetterOfEachWord(outputMarkdownModel.locationDataModel.country);
         let markdown = headerComponent.create(`Total Contributions`, country);
         markdown = markdown + `<a href="https://akramghaleb.github.io/top-active-users/index.html">\n`;

@@ -1,6 +1,6 @@
 const formatMarkdown = require('../format_markdown');
-let socialMediaComponent = (function () {
-    let createSocialMediaTable = function (title, description, url) {
+let socialMediaComponent = (function() {
+    let createSocialMediaTable = function(title, description, url) {
         let facebookPost = `sharer.php?t=${title}&u=${url}&_rdc=1&_rdr`;
         let facebookMessengerPost = `send?link=${url}&app_id=291494419107518&redirect_uri=${url}`;
         let twitterPost = `tweet?text=${title}&url=${url}`;
@@ -12,8 +12,7 @@ let socialMediaComponent = (function () {
         let wordpressPost = `press-this.php?u=${url}&t=${title}&s=${description}&i=`;
         let email = `name?cc=cc&bcc=bcc&subject=${title}&body=${description}-${url}`;
         let redditPost = `submit?title=${title}&url=${url}`;
-        let socialMediaArray = [
-            {
+        let socialMediaArray = [{
                 site: `Facebook`,
                 shareUrl: `https://web.facebook.com/${facebookPost}`,
                 iconUrl: `https://github.com/akramghaleb/github-active-users-monitor/raw/master/public/images/icons/facebook.svg`,
@@ -71,7 +70,7 @@ let socialMediaComponent = (function () {
         ];
         let table = `<table>\n`;
         table = table + `\t<tr>\n`;
-        for(const socialMedia of socialMediaArray){
+        for (const socialMedia of socialMediaArray) {
             table = table + `\t\t<td>\n`;
             table = table + `\t\t\t<a href="${socialMedia.shareUrl}">\n`
             table = table + `\t\t\t\t<img src="${socialMedia.iconUrl}" height="48" width="48" alt="${socialMedia.site}"/>\n`
@@ -82,7 +81,7 @@ let socialMediaComponent = (function () {
         table = table + `</table>\n\n`;
         return table;
     }
-    let create = function (title, description, url) {
+    let create = function(title, description, url) {
         return createSocialMediaTable(
             encodeURI(title),
             encodeURI(description),

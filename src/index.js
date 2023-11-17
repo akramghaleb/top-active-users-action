@@ -21,15 +21,15 @@ const createFollowersPage = require('./helper/markdown/page/create_followers_pag
 const requestOctokit = require('./helper/octokit/request_octokit');
 const formatMarkdown = require('./helper/markdown/format_markdown');
 const OutputMarkdownModel = require('./model/markdown/OutputMarkdownModel');
-let Index = function () {
+let Index = function() {
     // const AUTH_KEY = "";
-    const GITHUB_USERNAME_AND_REPOSITORY = 'akramghaleb/top-active-users';
+    // const GITHUB_USERNAME_AND_REPOSITORY = 'akramghaleb/top-active-users';
     const AUTH_KEY = process.env.CUSTOM_TOKEN;
-    //const GITHUB_USERNAME_AND_REPOSITORY = process.env.USERNAME_AND_REPOSITORY;
+    const GITHUB_USERNAME_AND_REPOSITORY = process.env.GITHUB_REPOSITORY;
     const MAXIMUM_ERROR_ITERATIONS = 4;
-    let getCheckpoint = async function (locationsArray, country, checkpoint) {
+    let getCheckpoint = async function(locationsArray, country, checkpoint) {
         let indexOfTheCountry = locationsArray.findIndex(location => location.country === country);
-        if(indexOfTheCountry === checkpoint){
+        if (indexOfTheCountry === checkpoint) {
             console.log("checkpoint set", country)
             return true;
         } else {
@@ -37,23 +37,16 @@ let Index = function () {
             return false;
         }
     }
-    let saveCache = async function (readConfigResponseModel, readCheckpointResponseModel) {
+    let saveCache = async function(readConfigResponseModel, readCheckpointResponseModel) {
         console.log(`########## SaveCache ##########`)
-        for await(const locationDataModel of readConfigResponseModel.locations){
+        for await (const locationDataModel of readConfigResponseModel.locations) {
             let isCheckpoint = await getCheckpoint(readConfigResponseModel.locations, locationDataModel.country, readCheckpointResponseModel.checkpoint);
-            if(isCheckpoint){
+            if (isCheckpoint) {
                 let json = await requestOctokit.request(AUTH_KEY, MAXIMUM_ERROR_ITERATIONS, locationDataModel.locations);
-                let readCacheResponseModel =  await outputCache.readCacheFile(locationDataModel.country);
-                if(readCacheResponseModel.status){
-                    if(readCacheResponseModel.users.length > json.length){
-                        if(json.length > 750) {
-                            console.log(`request success minimum:750 cache:${readCacheResponseModel.users.length} octokit:${json.length}`);
-                            await outputCache.saveCacheFile(locationDataModel.country, json);
-                        }
-                        else
-                        {
-                            console.log(`octokit error minimum:750 cache:${readCacheResponseModel.users.length} octokit:${json.length}`);
-                        }
+                let readCacheResponseModel = await outputCache.readCacheFile(locationDataModel.country);
+                if (readCacheResponseModel.status) {
+                    if (readCacheResponseModel.users.length > json.length) {
+                        console.log(`octokit error cache:${readCacheResponseModel.users.length} octokit:${json.length}`);
                     } else {
                         console.log(`request success cache:${readCacheResponseModel.users.length} octokit:${json.length}`);
                         await outputCache.saveCacheFile(locationDataModel.country, json);
@@ -65,14 +58,14 @@ let Index = function () {
             }
         }
     }
-    let saveMarkdown = async function (readConfigResponseModel, readCheckpointResponseModel) {
+    let saveMarkdown = async function(readConfigResponseModel, readCheckpointResponseModel) {
         console.log(`########## SaveMarkDown ##########`)
-        for await(const locationDataModel of readConfigResponseModel.locations){
+        for await (const locationDataModel of readConfigResponseModel.locations) {
             let isCheckpoint = await getCheckpoint(readConfigResponseModel.locations, locationDataModel.country, readCheckpointResponseModel.checkpoint)
-            if(isCheckpoint){
-                let readCacheResponseModel =  await outputCache.readCacheFile(locationDataModel.country);
-                if(readCacheResponseModel.status) {
-                    let outputMarkdownModel =  new OutputMarkdownModel(GITHUB_USERNAME_AND_REPOSITORY, locationDataModel, readCacheResponseModel, readConfigResponseModel);
+            if (isCheckpoint) {
+                let readCacheResponseModel = await outputCache.readCacheFile(locationDataModel.country);
+                if (readCacheResponseModel.status) {
+                    let outputMarkdownModel = new OutputMarkdownModel(GITHUB_USERNAME_AND_REPOSITORY, locationDataModel, readCacheResponseModel, readConfigResponseModel);
                     await outputMarkdown.savePublicContributionsMarkdownFile(locationDataModel.country, createPublicContributionsPage.create(outputMarkdownModel));
                     await outputMarkdown.saveTotalContributionsMarkdownFile(locationDataModel.country, createTotalContributionsPage.create(outputMarkdownModel));
                     await outputMarkdown.saveFollowersMarkdownFile(locationDataModel.country, createFollowersPage.create(outputMarkdownModel));
@@ -80,28 +73,28 @@ let Index = function () {
             }
             await outputCheckpoint.saveCheckpointFile(readConfigResponseModel.locations, locationDataModel.country, readCheckpointResponseModel.checkpoint)
         }
-        if(!readConfigResponseModel.devMode) await outputMarkdown.saveIndexMarkdownFile(createIndexPage.create(GITHUB_USERNAME_AND_REPOSITORY, readConfigResponseModel));
+        if (!readConfigResponseModel.devMode) await outputMarkdown.saveIndexMarkdownFile(createIndexPage.create(GITHUB_USERNAME_AND_REPOSITORY, readConfigResponseModel));
     }
-    let saveHtml = async function (readConfigResponseModel) {
+    let saveHtml = async function(readConfigResponseModel) {
         console.log(`########## SaveHtml ##########`);
         await outputHtml.saveRankingJsonFile(await createRankingJsonFile.create(readConfigResponseModel));
         await outputHtml.saveHtmlFile(createHtmlFile.create());
     }
-    let main = async function () {
+    let main = async function() {
         let readConfigResponseModel = await configFile.readConfigFile();
         let readCheckpointResponseModel = await outputCheckpoint.readCheckpointFile();
-        if(readConfigResponseModel.status && readCheckpointResponseModel.status){
-            if(!readConfigResponseModel.devMode) await pullGit.pull();
+        if (readConfigResponseModel.status && readCheckpointResponseModel.status) {
+            if (!readConfigResponseModel.devMode) await pullGit.pull();
             let checkpointCountry = readConfigResponseModel.locations[readCheckpointResponseModel.checkpoint].country
             await saveCache(readConfigResponseModel, readCheckpointResponseModel);
             await saveMarkdown(readConfigResponseModel, readCheckpointResponseModel)
             await saveHtml(readConfigResponseModel)
-            if(!readConfigResponseModel.devMode) await commitGit.commit(`Update ${formatMarkdown.capitalizeTheFirstLetterOfEachWord(checkpointCountry)}`);
-            if(!readConfigResponseModel.devMode) await pushGit.push();
+            if (!readConfigResponseModel.devMode) await commitGit.commit(`Update ${formatMarkdown.capitalizeTheFirstLetterOfEachWord(checkpointCountry)}`);
+            if (!readConfigResponseModel.devMode) await pushGit.push();
         }
     }
     return {
         main: main,
     };
 }();
-Index.main().then(() => { });
+Index.main().then(() => {});
