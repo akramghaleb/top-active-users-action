@@ -242,7 +242,7 @@ jobs:
 **1 —** Clone this repository to your computer.
 
 **2 —** Edit *index.js*
-📋 paste the `personal access token` in `AUTH_KEY` in https://github.com/akramghaleb/top-active-users-action/blob/main/src/index.js and comment *process.env* secrets.
+📋 paste the `personal access token` in `AUTH_KEY` in https://github.com/akramghaleb/top-active-users-action/blob/master/src/index.js and comment *process.env* secrets.
 ```javascript
     const AUTH_KEY = "ghp_vbmFdybMFCxWzvrgC*************";
     const GITHUB_USERNAME_AND_REPOSITORY = 'akramghaleb/top-active-users';
